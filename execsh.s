@@ -1,5 +1,7 @@
+BITS 32
+
 section .text:
-    global _start
+global _start
 
 _start:
     xor     eax, eax
@@ -14,4 +16,4 @@ _start:
     push    esp
     pop     ecx
     mov     al, 0xb
-    int     0x80    
+    int     0x80

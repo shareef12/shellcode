@@ -1,8 +1,0 @@
-A collection of shellcode written by myself.
-
-Compiling
-=========
-nasm -f elf <file.s>
-ld -m elf_i386 -o <file> <file.o>
-
-Binary data was dumped in gdb using "dump binary memory <filename> <start_addr> <end_addr>"
